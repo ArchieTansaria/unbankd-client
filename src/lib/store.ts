@@ -34,6 +34,8 @@ interface LoanState {
   myLoans: any[];
   addLoan: (loan: any) => void;
   removeLoan: (id: string) => void;
+  setLoans: (loans: any[]) => void;
+  setMyLoans: (loans: any[]) => void;
 }
 
 export const useLoanStore = create<LoanState>((set) => ({
@@ -43,4 +45,37 @@ export const useLoanStore = create<LoanState>((set) => ({
   removeLoan: (id) => set((state) => ({ 
     loans: state.loans.filter(loan => loan.id !== id)
   })),
+  setLoans: (loans) => set({ loans }),
+  setMyLoans: (myLoans) => set({ myLoans }),
+}));
+
+interface UserState {
+  user: {
+    name: string | null;
+    email: string | null;
+    age: string | null;
+    isLoggedIn: boolean;
+  };
+  setUser: (user: Partial<UserState['user']>) => void;
+  logout: () => void;
+}
+
+export const useUserStore = create<UserState>((set) => ({
+  user: {
+    name: null,
+    email: null,
+    age: null,
+    isLoggedIn: false,
+  },
+  setUser: (userData) => set((state) => ({
+    user: { ...state.user, ...userData }
+  })),
+  logout: () => set({
+    user: {
+      name: null,
+      email: null,
+      age: null,
+      isLoggedIn: false,
+    }
+  }),
 }));

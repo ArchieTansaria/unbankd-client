@@ -12,10 +12,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { useWalletStore } from "@/lib/store";
 
 export function WalletConnect() {
-  const [connected, setConnected] = useState(false);
-  const [address, setAddress] = useState<string | null>(null);
+  const { connected, address, setConnected, setAddress } = useWalletStore();
   const [walletOpen, setWalletOpen] = useState(false);
   const { toast } = useToast();
 

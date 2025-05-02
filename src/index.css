@@ -109,3 +109,18 @@
     @apply before:p-[1px] before:bg-gradient-to-r before:from-indigo-500/40 before:via-emerald-500/40 before:to-orange-400/40;
   }
 }
+
+@layer utilities {
+  .animate-pulse-slow {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+}
