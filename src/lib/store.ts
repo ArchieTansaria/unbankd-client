@@ -79,3 +79,20 @@ export const useUserStore = create<UserState>((set) => ({
     }
   }),
 }));
+
+// Onboarding flow state
+interface OnboardingState {
+  step: number;
+  isReturningUser: boolean | null;
+  setStep: (step: number) => void;
+  setIsReturningUser: (isReturning: boolean) => void;
+  resetOnboarding: () => void;
+}
+
+export const useOnboardingStore = create<OnboardingState>((set) => ({
+  step: 1,
+  isReturningUser: null,
+  setStep: (step) => set({ step }),
+  setIsReturningUser: (isReturningUser) => set({ isReturningUser }),
+  resetOnboarding: () => set({ step: 1, isReturningUser: null }),
+}));

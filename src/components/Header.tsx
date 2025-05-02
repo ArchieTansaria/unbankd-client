@@ -63,8 +63,8 @@ export function Header() {
                 <Button variant="outline" onClick={() => navigate("/login")}>
                   Login
                 </Button>
-                <Button className="bg-indigo-600 hover:bg-indigo-700" onClick={() => navigate("/signup")}>
-                  Sign Up
+                <Button className="bg-indigo-600 hover:bg-indigo-700" onClick={() => navigate("/onboarding")}>
+                  Get Started
                 </Button>
               </div>
             ) : null
@@ -109,9 +109,9 @@ export function Header() {
                           Login
                         </Button>
                         <Button className="w-full bg-indigo-600 hover:bg-indigo-700" onClick={() => {
-                          navigate("/signup");
+                          navigate("/onboarding");
                         }}>
-                          Sign Up
+                          Get Started
                         </Button>
                       </>
                     ) : (
