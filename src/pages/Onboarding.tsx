@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useWalletStore, useOnboardingStore, useUserStore } from "@/lib/store";
 import { ConnectWalletStep } from "@/components/onboarding/ConnectWalletStep";
 import { UserDetailsStep } from "@/components/onboarding/UserDetailsStep";
+import { AadharPanStep } from "@/components/onboarding/AadharPanStep";
+import { ITRStep } from "@/components/onboarding/ITRStep";
 import { KYCStep } from "@/components/onboarding/KYCStep";
 import { AnimatePresence } from "framer-motion";
 
@@ -31,6 +33,10 @@ const Onboarding = () => {
       case 2:
         return <UserDetailsStep />;
       case 3:
+        return <AadharPanStep />;
+      case 4:
+        return <ITRStep />;
+      case 5:
         return <KYCStep />;
       default:
         return <ConnectWalletStep />;
@@ -43,7 +49,7 @@ const Onboarding = () => {
         {/* Progress indicator */}
         <div className="fixed top-10 left-1/2 transform -translate-x-1/2">
           <div className="flex items-center space-x-2">
-            {[1, 2, 3].map((s) => (
+            {[1, 2, 3, 4, 5].map((s) => (
               <div 
                 key={s}
                 className={`w-3 h-3 rounded-full transition-all duration-300 ${
