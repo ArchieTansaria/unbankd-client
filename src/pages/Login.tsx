@@ -86,7 +86,7 @@ const Login = () => {
       });
       
       // Navigate to dashboard
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       toast({
         title: "Login Failed",

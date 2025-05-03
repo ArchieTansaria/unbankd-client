@@ -130,7 +130,7 @@ export const UserDetailsStep = () => {
       });
       
       // Navigate to dashboard
-      setTimeout(() => navigate("/"), 500);
+      setTimeout(() => navigate("/dashboard"), 500);
     } catch (error) {
       toast({
         title: "Login Failed",

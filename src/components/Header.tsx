@@ -1,134 +1,131 @@
 
-import { useEffect, useState } from "react";
-import { Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "./ThemeToggle";
-import { WalletConnect } from "./WalletConnect";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useUserStore } from "@/lib/store";
-import { useNavigate } from "react-router-dom";
+import { WalletConnect } from "@/components/WalletConnect";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function Header() {
-  const [scrolled, setScrolled] = useState(false);
-  const isMobile = useIsMobile();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
-  const { user, logout } = useUserStore();
-
+  const location = useLocation();
+  const { user } = useUserStore();
+  
+  // Handle scroll events to add/remove shadow from header
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 10);
     };
-
+    
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
+  
+  // Close mobile menu when navigating
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+  
+  // Define navigation items based on user authentication status
+  const navItems = [
+    { title: "About", href: "/#about" },
+    ...(user.isLoggedIn
+      ? [{ title: "Dashboard", href: "/dashboard" }]
+      : [])
+  ];
 
   return (
     <header 
-      className={`sticky top-0 w-full z-50 transition-all duration-200 ${
-        scrolled 
-          ? "bg-background/80 backdrop-blur-md shadow-sm" 
-          : "bg-transparent"
+      className={`sticky top-0 z-50 w-full backdrop-blur transition-shadow ${
+        isScrolled ? "bg-background/80 shadow-sm" : "bg-background"
       }`}
     >
-      <div className="container mx-auto px-4 flex items-center justify-between h-16">
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
-          <div className="bg-gradient-to-r from-indigo-600 to-emerald-500 rounded-lg w-8 h-8 flex items-center justify-center text-white font-bold">
-            RL
-          </div>
-          <h1 className="text-xl font-bold">RupeeLend</h1>
-        </div>
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        <Link to="/" className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold">R</div>
+          <span className="font-bold text-xl hidden sm:inline-block">RupeeLend</span>
+        </Link>
         
-        {!isMobile ? (
-          <nav className="hidden md:flex items-center space-x-6">
-            <a href="#" className="font-medium hover:text-indigo-600 transition-colors">Home</a>
-            <a href="#marketplace" className="font-medium hover:text-indigo-600 transition-colors">Marketplace</a>
-            <a href="#dashboard" className="font-medium hover:text-indigo-600 transition-colors">Dashboard</a>
-            <a href="#about" className="font-medium hover:text-indigo-600 transition-colors">About</a>
-          </nav>
-        ) : null}
+        <nav className="hidden md:flex items-center gap-6">
+          {navItems.map((item) => (
+            <Link 
+              key={item.title} 
+              to={item.href}
+              className="text-sm font-medium hover:text-indigo-600 transition-colors"
+            >
+              {item.title}
+            </Link>
+          ))}
+        </nav>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
           <ThemeToggle />
+          <WalletConnect />
           
           {!user.isLoggedIn ? (
-            !isMobile ? (
-              <div className="flex items-center gap-2">
-                <Button variant="outline" onClick={() => navigate("/login")}>
-                  Login
-                </Button>
-                <Button className="bg-indigo-600 hover:bg-indigo-700" onClick={() => navigate("/onboarding")}>
-                  Get Started
-                </Button>
-              </div>
-            ) : null
-          ) : (
-            !isMobile ? (
-              <div className="flex items-center gap-2">
-                <WalletConnect />
-                <Button variant="outline" onClick={handleLogout}>
-                  Logout
-                </Button>
-              </div>
-            ) : <WalletConnect />
-          )}
+            <div className="hidden md:flex gap-3">
+              <Button 
+                variant="outline"
+                onClick={() => navigate("/login")}
+              >
+                Log In
+              </Button>
+              <Button 
+                className="bg-indigo-600 hover:bg-indigo-700"
+                onClick={() => navigate("/signup")}
+              >
+                Sign Up
+              </Button>
+            </div>
+          ) : null}
           
-          {isMobile && (
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent>
-                <div className="flex flex-col h-full">
-                  <div className="flex items-center gap-2 py-4">
-                    <div className="bg-gradient-to-r from-indigo-600 to-emerald-500 rounded-lg w-8 h-8 flex items-center justify-center text-white font-bold">
-                      RL
-                    </div>
-                    <h1 className="text-xl font-bold">RupeeLend</h1>
-                  </div>
-                  <nav className="flex flex-col space-y-4 py-4">
-                    <a href="#" className="font-medium hover:text-indigo-600 transition-colors">Home</a>
-                    <a href="#marketplace" className="font-medium hover:text-indigo-600 transition-colors">Marketplace</a>
-                    <a href="#dashboard" className="font-medium hover:text-indigo-600 transition-colors">Dashboard</a>
-                    <a href="#about" className="font-medium hover:text-indigo-600 transition-colors">About</a>
-                  </nav>
-                  <div className="mt-auto py-4 space-y-2">
-                    {!user.isLoggedIn ? (
-                      <>
-                        <Button className="w-full" variant="outline" onClick={() => {
-                          navigate("/login");
-                        }}>
-                          Login
-                        </Button>
-                        <Button className="w-full bg-indigo-600 hover:bg-indigo-700" onClick={() => {
-                          navigate("/onboarding");
-                        }}>
-                          Get Started
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <WalletConnect />
-                        <Button className="w-full" variant="outline" onClick={handleLogout}>
-                          Logout
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-          )}
+          <button
+            className="block md:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </div>
+      
+      {/* Mobile menu */}
+      {isMenuOpen && (
+        <div className="md:hidden px-4 py-4 pb-6 bg-background border-t">
+          <nav className="flex flex-col gap-4">
+            {navItems.map((item) => (
+              <Link 
+                key={item.title} 
+                to={item.href}
+                className="text-sm font-medium p-2 hover:bg-muted rounded-md transition-colors"
+              >
+                {item.title}
+              </Link>
+            ))}
+            
+            {!user.isLoggedIn && (
+              <>
+                <Button 
+                  variant="outline"
+                  className="w-full mt-2"
+                  onClick={() => navigate("/login")}
+                >
+                  Log In
+                </Button>
+                <Button 
+                  className="w-full bg-indigo-600 hover:bg-indigo-700"
+                  onClick={() => navigate("/signup")}
+                >
+                  Sign Up
+                </Button>
+              </>
+            )}
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
